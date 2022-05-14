@@ -4,13 +4,29 @@ services:
   node-app:
     build:
       context: .
+      # Injects the NODE_ENV for Dockerfile to use
+      # and be able to make decision to use development
       args:
         NODE_ENV: development
     volumes:
+    # bindMounts volume
       - ./:/app
+      #  Anonymous volume
       - /app/node_modules
+
+    # environment variables
+    # 1. NODE_ENV means these container is in dev mode
+    # 2. MONGO_USER and MONGO_PASSWORD env variables
     environment:
       - NODE_ENV=development
+      - MONGO_USER=ralph
+      - MONGO_PASSWORD=mypassword
+    # overites CMD command in Dockerfile
     command: npm run start:dev
+  
+  mongo:
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=ralph
+      - MONGO_INITDB_ROOT_PASSWORD=mypassword
 
   

@@ -4,8 +4,11 @@ services:
   node-app:
     build:
       context: .
+      # Injects the NODE_ENV for Dockerfile to use
+      # and be able to make decision to use production
       args:
-         NODE_ENV: production
+        NODE_ENV: production
     environment:
       - NODE_ENV=production
     command: npm start
+    # command: node index.js
