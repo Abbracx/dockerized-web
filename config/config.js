@@ -1,4 +1,5 @@
 // mongo name comes from the running services on mongo in docker-compose file
+// mongo dynamically resolves it to the dns name.
 module.exports = {
     MONGO_IP:process.env.MONGO_IP  || "mongo",
     MONGO_PORT:process.env.MONGO_PORT || 27017,

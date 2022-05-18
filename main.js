@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 
+const postRouter =  require("./routes/postRoutes")
+
 const {
   MONGO_USER,
   MONGO_PASSWORD,
@@ -13,14 +15,13 @@ app.get("/", async (req, res, next) => {
   return res.send("<h2>Hello Header Updated and updated</h2>");
 });
 
-console.log(`User is ${MONGO_USER}`);
-console.log(`Password is ${MONGO_PASSWORD}`);
 
+
+
+const mongo_URL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`;
 const connectWithRetry = async () => {
   mongoose
-    .connect(
-      `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`
-    )
+    .connect(mongo_URL)
     .then(() => console.log("Successfuly connected to mongo docker."))
     .catch((e) => {
       console.log(e);
@@ -28,6 +29,9 @@ const connectWithRetry = async () => {
     });
 };
 
+//pass these middleware so that our web app can access req.body in controllers
+app.use(express.json())
+app.use('/api/v1/posts', postRouter)
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, async () => {
