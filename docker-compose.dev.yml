@@ -21,6 +21,7 @@ services:
       - NODE_ENV=development
       - MONGO_USER=ralph
       - MONGO_PASSWORD=mypassword
+      - SESSION_SECRET=secret
     # overites CMD command in Dockerfile
     command: npm run start:dev
   

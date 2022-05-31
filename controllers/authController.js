@@ -3,15 +3,15 @@ const bcrypt = require("bcryptjs");
 const { response } = require("express");
 
 exports.signUp = async (req, res, next) => {
-  const { username, password } = req.body;
-  const hashpassword = await bcrypt.hash(password, 12);
-
+  
   try {
+    const { username, password } = req.body;
+    const hashpassword = await bcrypt.hash(password, 12);
     const newUser = await User.create({
       username,
       password: hashpassword,
     });
-    const { password, ...user } = newUser.toJSON();
+    const { passwordFiltered, ...user } = newUser.toJSON();
     return res.status(200).json({
       status: "Success",
       data: {
@@ -27,14 +27,14 @@ exports.signUp = async (req, res, next) => {
 
 
 exports.login = async(req, res, next) => {
-    const { username, password } = req.body
-
-    try {
+  
+  try {
+        const { username, password } = req.body
         const hashPassword = await bcrypt.hash(password, 12)
         const user = await User.findOne({username})
          
         if(!user) {
-            res.status(404).json({
+            return res.status(404).json({
             status: 'Not Found',
             message: 'User not found with credentials'
             })

@@ -24,6 +24,13 @@ services:
       # NOTE: Named volumes must be declared before any services can use it
       - mongo-db:/data/db
 
+      
+  # Defined here, cos we will need it in production and in development.
+  redis:
+    image: redis
+
+
+
 # Declaration of named volumes
 volumes:
   mongo-db:
