@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 // import redis and express sessions
 const session = require("express-session");
+const cors = require('cors')
 // const redis = require("redis");
 const redis = require("ioredis");
 // create a redis store
@@ -43,6 +44,7 @@ const connectWithRetry = async () => {
 //pass these middleware so that our web app can access req.body in controllers
 app.use(express.json());
 app.enable("trust proxy")
+app.use(cors({}))
 app.use(
   session({
     name: "qid",
@@ -58,6 +60,10 @@ app.use(
   })
 );
 
+app.use("/api/v1/", async (req, res) => {
+  console.log("Hello")
+  res.send('Yeah, It worked.')
+});
 app.use("/api/v1/posts", postRouter);
 app.use("/api/v1/users", userRouter);
 
