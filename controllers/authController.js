@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const { response } = require("express");
 
 exports.signUp = async (req, res, next) => {
-  
   try {
     const { username, password } = req.body;
     const hashpassword = await bcrypt.hash(password, 12);
@@ -12,6 +11,7 @@ exports.signUp = async (req, res, next) => {
       password: hashpassword,
     });
     const { passwordFiltered, ...user } = newUser.toJSON();
+    req.session.user = user
     return res.status(200).json({
       status: "Success",
       data: {
@@ -25,33 +25,36 @@ exports.signUp = async (req, res, next) => {
   }
 };
 
-
-exports.login = async(req, res, next) => {
-  
+exports.login = async (req, res, next) => {
   try {
-        const { username, password } = req.body
-        const hashPassword = await bcrypt.hash(password, 12)
-        const user = await User.findOne({username})
-         
-        if(!user) {
-            return res.status(404).json({
-            status: 'Not Found',
-            message: 'User not found with credentials'
-            })
-        } 
-        const isCorrect = await bcrypt.compare(password, user.password)
-        if(isCorrect){
-            res.status(200).json({
-                status: "Success"
-            })
-        }else{
-            res.status(400).json({
-              status: "Failed",
-              message: "Incorrect Username/Password"
-            });
-        }
-    } catch (error) {
-        
-    }
-}
+    const { username, password } = req.body;
+    const hashPassword = await bcrypt.hash(password, 12);
+    const user = await User.findOne({ username });
 
+    if (!user) {
+      return res.status(404).json({
+        status: "Not Found",
+        message: "User not found with credentials",
+      });
+    }
+    const isCorrect = await bcrypt.compare(password, user.password);
+    if (isCorrect) {
+      const { password, ...cleanedUser } = user.toJSON()
+      req.session.user = cleanedUser
+      res.status(200).json({
+        status: "Successfully logged in",
+        data: { cleanedUser },
+      });
+    } else {
+      res.status(400).json({
+        status: "Failed",
+        message: "Incorrect Username/Password",
+        
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: "Server Failed",
+    }); 
+  }
+};
