@@ -1,6 +1,10 @@
 version: "3"
 
 services:
+
+  nginx:
+    ports:
+      - "5000:80"
   node-app:
     build:
       context: .
@@ -14,7 +18,7 @@ services:
       #  Anonymous volume
       - /app/node_modules
 
-    # environment variables
+    # Setting environment variables
     # 1. NODE_ENV means these container is in dev mode
     # 2. MONGO_USER and MONGO_PASSWORD env variables
     environment:

@@ -42,6 +42,7 @@ const connectWithRetry = async () => {
 
 //pass these middleware so that our web app can access req.body in controllers
 app.use(express.json());
+app.enable("trust proxy")
 app.use(
   session({
     name: "qid",

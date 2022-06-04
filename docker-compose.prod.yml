@@ -1,6 +1,10 @@
 version: "3"
 
 services:
+  nginx:
+    # mapping port 5000 to 80 of nginx
+    ports:
+      - "80:80"
   node-app:
     build:
       context: .
